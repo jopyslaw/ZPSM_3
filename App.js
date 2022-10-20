@@ -1,59 +1,103 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, { useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
   TouchableOpacity
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
 const App = () => {
-  const [show, setShow] = useState(false);
-  const onPress = () => {
-    setShow(!show);
+  const add = () => {
+
+  }
+
+  const sub = () => {
+
+  }
+
+  const mul = () => {
+
+  }
+
+  const div = () => {
+    
   }
 
   return (
     <View style={styles.sectionContainer}>
-      <View>
-        <Text style={styles.textCenter}>Zadanie 2</Text>
-        <TouchableOpacity onPress={onPress} style={styles.btnStyle}>
-          { show &&
-            <Text style={styles.textCenter}>Ukryj</Text>
-          }
-          {
-            show ||
-            <Text style={styles.textCenter}>Pokaż</Text>
-          }
-          
+      <View style={styles.number}>
+        <Text style={styles.calcVal}>0</Text>
+      </View>
+      <View style={styles.oneRowButtons}>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>AC</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.biggerBtn}>
+          <Text></Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]}>
+          <Text style={styles.textStyle}>/</Text>
         </TouchableOpacity>
       </View>
-      <View>
-        { show &&
-          <Text style={styles.textCenter}>Nazywam się Konrad Jop</Text>
-        }
+
+      <View style={styles.oneRowButtons}>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>7</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>8</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>9</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]}>
+          <Text style={styles.textStyle}>X</Text>
+        </TouchableOpacity>
       </View>
+
+      <View style={styles.oneRowButtons}>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>4</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>5</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>6</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]}>
+          <Text style={styles.textStyle}>-</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.oneRowButtons}>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>2</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>3</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]}>
+          <Text style={styles.textStyle}>+</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.oneRowButtons}>
+        <TouchableOpacity style={styles.biggerBtn}>
+          <Text style={styles.textStyle}>0</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.oneBtn}>
+          <Text style={styles.textStyle}>,</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.oneBtn, styles.functBtn]}>
+          <Text style={styles.textStyle}>=</Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
     
   );
@@ -62,8 +106,8 @@ const App = () => {
 const styles = StyleSheet.create({
   sectionContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",  
+    flexDirection: 'column',
+    backgroundColor: 'lightblue',
   },
   textCenter: {
     textAlign: 'center',
@@ -71,6 +115,51 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     backgroundColor: '#787777',
+  },
+  number: {
+    alignItems: 'flex-end',
+    textAlign: 'right',
+    backgroundColor: 'gray',
+    width: '100%',
+    height: '20%',
+    fontSize: '50%',
+  },  
+  oneBtn: {
+    padding: 10,
+    fontSize: '20p%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '25%',
+    height: '100%',
+    backgroundColor: '#787777',
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  biggerBtn: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    width: '50%',
+    height: '100%',
+    paddingLeft: 35,
+    backgroundColor: '#787777',
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  oneRowButtons: {
+    flexDirection: 'row', 
+    width: '100%', 
+    height: '16%'
+  },
+  textStyle: {
+    fontSize: 50,
+    color: 'white',
+  },
+  functBtn: {
+    backgroundColor: '#f28507', 
+  },
+  calcVal: {
+    fontSize: 100,
+    color: 'white',
   }
 });
 
