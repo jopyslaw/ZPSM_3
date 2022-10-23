@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   },
   btnStyle: {
     backgroundColor: '#787777',
+    borderRadius: 10,
   }
 });
 
