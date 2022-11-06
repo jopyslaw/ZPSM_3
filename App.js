@@ -3,10 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
 } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import Orientation from 'react-native-orientation-locker';
 import { evaluate } from 'mathjs';
+import ButtonComponent from './ButtonComponent';
 
 const App = () => {
   const [resultData, setResultData] = useState(0);
@@ -14,6 +15,68 @@ const App = () => {
   const [all, setAll] = useState('');
   const [orientation, setOrientation] = useState(Orientation.getInitialOrientation());
   const [toEnd, setToEnd] = useState(false);
+  useEffect(() => {
+    SplashScreen.hide();
+  })
+  const opertationButtons = ['sqrt', '/', '*', 'log', 'log10', '-', '+', 'PI' ];
+  const GlobalData = {
+    'sqrt': 'sqrt(',
+    'log': 'log(',
+    'log10': 'log10(',
+    'PI': 'PI*',
+    'e^x': 'e^',
+    '10^x': '10^',
+    'e': 'e*',
+    'x^2': '^2',
+    'x^3': '^3'
+  }
+    
+  const firstRow = [
+    'AC','','/',
+  ];
+  const secondRow = [
+    '7','8','9','*',
+  ];
+
+  const thirdRow = [
+    '4','5','6','-',
+  ];
+
+  const fourthRow = [
+    '1','2','3','+',
+  ];
+
+  const fifthRow = [
+    '0',',','='
+  ];
+
+  const btnTabPortrait = [
+    firstRow,secondRow,thirdRow,fourthRow,fifthRow 
+  ]
+
+  const firstRowLandscape = [
+    'sqrt', '!', 'AC', '+/-', '%', '/',
+  ];
+
+  const secondRowLandscape = [
+    'e^x', '10^x', ...secondRow
+  ];
+
+  const thirdRowLandscape = [
+    'log', 'log10', ...thirdRow
+  ];
+
+  const fourthRowLandscape = [
+    'e', 'x^2', ...fourthRow
+  ];
+  
+  const fifthRowLandscape = [
+    'PI', 'x^3', ...fifthRow
+  ];
+
+  const btnTabLandscape = [
+    firstRowLandscape, secondRowLandscape, thirdRowLandscape, fourthRowLandscape, fifthRowLandscape
+  ];
 
   Orientation.addDeviceOrientationListener((modeOrientation) => {
     setOrientation(() => modeOrientation);
@@ -55,6 +118,94 @@ const App = () => {
     setAll(prev => prev += '-');
   }
 
+  const buttonRenderPortrait = () => {
+    return btnTabPortrait.map((row, index) => {
+      return (
+        <View style={styles.oneRowButtons} key={index}>
+          {
+            row.map((data, index) => {
+              if(opertationButtons.includes(data)) {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={() => chooseOperation(data)} isLandscape={false}></ButtonComponent>
+                )
+              } else if (data === '=') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={result} isLandscape={false}></ButtonComponent>
+                )
+              } else if (data === 'AC') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={clear} isLandscape={false}></ButtonComponent>
+                )
+              } else if (data === '+/-') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={setPlusOrMinus} isLandscape={false}></ButtonComponent>
+                )
+              } else if (data === ',') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={addDot} isLandscape={false}></ButtonComponent>
+                )
+              } 
+              return (
+                <ButtonComponent key={index} text={data} onPress={() => setNumber(data)} isLandscape={false}></ButtonComponent>
+              )
+                 
+            })
+          }
+        </View>
+      )
+    })
+  }
+
+  const ButtonRenderLandscape = () => {
+    return btnTabLandscape.map((row, index) => {
+      return(
+        <View style={styles.oneRowButtons} key={index}>
+          {
+            row.map((data, index) => {
+              if(opertationButtons.includes(data)) {
+                if(GlobalData[data]) {
+                  return (
+                    <ButtonComponent key={index} text={data} onPress={() => chooseOperation(GlobalData[data])} isLandscape={true}></ButtonComponent>
+                  )
+                } else {
+                  return (
+                    <ButtonComponent key={index} text={data} onPress={() => chooseOperation(data)} isLandscape={true}></ButtonComponent>
+                  )
+                }
+              } else if (data === '=') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={result} isLandscape={true}></ButtonComponent>
+                )
+              } else if (data === 'AC') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={clear} isLandscape={true}></ButtonComponent>
+                )
+              } else if (data === '+/-') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={setPlusOrMinus} isLandscape={true}></ButtonComponent>
+                )
+              } else if (data === ',') {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={addDot} isLandscape={true}></ButtonComponent>
+                )
+              }
+              if(GlobalData[data]) {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={() => setNumber(GlobalData[data])} isLandscape={true}></ButtonComponent>
+                )
+              } else {
+                return (
+                  <ButtonComponent key={index} text={data} onPress={() => setNumber(data)} isLandscape={true}></ButtonComponent>
+                )
+              }
+              
+            })
+          }
+        </View>
+      )
+    })
+  }
+
   if(orientation === 'PORTRAIT') {
     return (
       <View style={styles.sectionContainer}>
@@ -69,77 +220,9 @@ const App = () => {
             }
           </Text>
         </View>
-        <View style={styles.oneRowButtons}>
-          <TouchableOpacity style={styles.oneBtn} onPress={clear}>
-            <Text style={styles.textStyle}>AC</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.biggerBtn}>
-            <Text></Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtn, styles.functBtn]} onPress={() => chooseOperation('/')}>
-            <Text style={styles.textStyle}>/</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('7')}>
-            <Text style={styles.textStyle}>7</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('8')}>
-            <Text style={styles.textStyle}>8</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('9')}>
-            <Text style={styles.textStyle}>9</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]} onPress={() => chooseOperation('*')}>
-            <Text style={styles.textStyle}>x</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('4')}>
-            <Text style={styles.textStyle}>4</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('5')}>
-            <Text style={styles.textStyle}>5</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('6')}>
-            <Text style={styles.textStyle}>6</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]} onPress={() => chooseOperation('-')}>
-            <Text style={styles.textStyle}>-</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('1')}>
-            <Text style={styles.textStyle}>1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('2')}>
-            <Text style={styles.textStyle}>2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={() => setNumber('3')}>
-            <Text style={styles.textStyle}>3</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtn, styles.functBtn ]} onPress={() => chooseOperation('+')}>
-            <Text style={styles.textStyle}>+</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-          <TouchableOpacity style={styles.biggerBtn} onPress={() => setNumber('0')}>
-            <Text style={styles.textStyle}>0</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtn} onPress={addDot}>
-            <Text style={styles.textStyle}>,</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtn, styles.functBtn]} onPress={result}>
-            <Text style={styles.textStyle}>=</Text>
-          </TouchableOpacity>
-        </View>
-  
+        {buttonRenderPortrait()}
+             
       </View>
-      
     )
   }
   else if(orientation === 'LANDSCAPE-LEFT' || 'LANDSCAPE-RIGHT') {
@@ -156,107 +239,7 @@ const App = () => {
             }
           </Text>
         </View>
-        <View style={styles.oneRowButtons}>
-        <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => chooseOperation('sqrt(')}>
-            <Text style={styles.textStyleLandscape}>sqrt</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('!')}>
-            <Text style={styles.textStyleLandscape}>!</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={clear}>
-            <Text style={styles.textStyleLandscape}>AC</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={setPlusOrMinus}>
-            <Text style={styles.textStyleLandscape}>+/-</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('%')}>
-            <Text style={styles.textStyleLandscape}>%</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtnLandscape, styles.functBtn]} onPress={() => chooseOperation('/')}>
-            <Text style={styles.textStyleLandscape}>/</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-        <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('e^')}>
-            <Text style={styles.textStyleLandscape}>e^x</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('10^')}>
-            <Text style={styles.textStyleLandscape}>10^x</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('7')}>
-            <Text style={styles.textStyleLandscape}>7</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('8')}>
-            <Text style={styles.textStyleLandscape}>8</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('9')}>
-            <Text style={styles.textStyleLandscape}>9</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtnLandscape, styles.functBtn ]} onPress={() => chooseOperation('*')}>
-            <Text style={styles.textStyleLandscape}>x</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => chooseOperation('log(')}>
-            <Text style={styles.textStyleLandscape}>ln</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => chooseOperation('log10(')}>
-            <Text style={styles.textStyleLandscape}>log10</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('4')}>
-            <Text style={styles.textStyleLandscape}>4</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('5')}>
-            <Text style={styles.textStyleLandscape}>5</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('6')}>
-            <Text style={styles.textStyleLandscape}>6</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtnLandscape, styles.functBtn ]} onPress={() => chooseOperation('-')}>
-            <Text style={styles.textStyleLandscape}>-</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-        <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('e*')}>
-            <Text style={styles.textStyleLandscape}>e</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('^2')}>
-            <Text style={styles.textStyleLandscape}>x^2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('1')}>
-            <Text style={styles.textStyleLandscape}>1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('2')}>
-            <Text style={styles.textStyleLandscape}>2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('3')}>
-            <Text style={styles.textStyleLandscape}>3</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtnLandscape, styles.functBtn ]} onPress={() => chooseOperation('+')}>
-            <Text style={styles.textStyleLandscape}>+</Text>
-          </TouchableOpacity>
-        </View>
-  
-        <View style={styles.oneRowButtons}>
-        <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => chooseOperation('PI*')}>
-            <Text style={styles.textStyleLandscape}>PI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={() => setNumber('^3')}>
-            <Text style={styles.textStyleLandscape}>x^3</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.biggerBtnLandscape} onPress={() => setNumber('0')}>
-            <Text style={styles.textStyleLandscape}>0</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.oneBtnLandscape} onPress={addDot}>
-            <Text style={styles.textStyleLandscape}>,</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.oneBtnLandscape, styles.functBtn]} onPress={result}>
-            <Text style={styles.textStyleLandscape}>=</Text>
-          </TouchableOpacity>
-        </View>
+        {ButtonRenderLandscape()}
   
       </View>
       
@@ -285,48 +268,6 @@ const styles = StyleSheet.create({
     height: '20%',
     fontSize: '50%',
   },  
-  oneBtn: {
-    padding: 10,
-    fontSize: '20p%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '25%',
-    height: '100%',
-    backgroundColor: '#787777',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  oneBtnLandscape: {
-    padding: 10,
-    fontSize: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '17%',
-    height: '100%',
-    backgroundColor: '#787777',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  biggerBtn: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    width: '50%',
-    height: '100%',
-    paddingLeft: 35,
-    backgroundColor: '#787777',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  biggerBtnLandscape: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    width: '34%',
-    height: '100%',
-    paddingLeft: 35,
-    backgroundColor: '#787777',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
   oneRowButtons: {
     flexDirection: 'row', 
     width: '100%', 
@@ -335,13 +276,6 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: 50,
     color: 'white',
-  },
-  textStyleLandscape: {
-    fontSize: 20,
-    color: 'white',
-  },
-  functBtn: {
-    backgroundColor: '#f28507', 
   },
   calcVal: {
     fontSize: 100,
